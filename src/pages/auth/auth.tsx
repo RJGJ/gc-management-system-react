@@ -15,6 +15,8 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [logginIn, setLogginIn] = useState(true);
   const [alertMsg, setAlertMsg] = useState("");
+  const [alertType, setAlertType] = useState(true);
+  
 
   const clearFields = () => {
     setEmail("");
@@ -29,7 +31,11 @@ const Auth = () => {
         email,
         password,
       });
-      console.log(user, session, error);
+        console.log(user, session, error);
+      if (user) throw error
+        setAlertType(false);
+        setAlertMsg('Wrong email or passwords');
+
     } else {
       const { user, session, error } = await supabase.auth.signUp({
         email,
@@ -54,7 +60,7 @@ const Auth = () => {
             <h1 className="card-title text-center">
               {logginIn ? "Login" : "Register"}
             </h1>
-            {!!alertMsg && <div className="alert alert-danger">{alertMsg}</div>}
+            {!!alertMsg && <div className="{alertType ? alert alert-success : alert alert-danger}">{alertMsg}</div>}
             <form onSubmit={handleSubmit} id={formId} method="POST">
               <div className="form-group">
                 <label htmlFor="email">Email:</label>
@@ -69,6 +75,7 @@ const Auth = () => {
                   value={email}
                   onChange={(e) => handleInputChange(e, setEmail)}
                 />
+                
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password:</label>
